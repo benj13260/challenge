@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ include "challenge.name" . }}
+  labels:
+    {{- include "challenge.labels" . | nindent 4 }}
+    {{- include "challenge.promLabels" . | nindent 4 }}
+spec:
+  groups:
+  - name: challenge
+    rules:
+    - alert: {{ .Values.challenge.alert.ruleLowBalanceThreshold }}
+      expr: challenge_account_balance < {{ .Values.challenge.alert.threshold }}
+      for: 30s
+      labels:
+        team: challenge
+        severity: low
+      annotations:
+        summary: "[Alert] Balance threshold"
+        #{{ "{{" }} $labels.name {{ "}}" }} / {{ "{{" }} $labels.key {{ "}}" }}"
+        description: "Current balance: {{ "{{" }} $value {{ "}}" }} {{ "{{" }} $labels.unit {{ "}}" }} - {{ "{{" }} $labels.name {{ "}}" }} / {{ "{{" }} $labels.key {{ "}}" }}"
+        runbook: "Refund wallet..."

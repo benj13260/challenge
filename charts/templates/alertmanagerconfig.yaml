@@ -1,0 +1,25 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: {{ include "challenge.name" . }}
+  labels:
+    {{- include "challenge.labels" . | nindent 4 }}
+    {{- include "challenge.promLabels" . | nindent 4 }}
+spec:
+  route:
+    groupBy: [alertname]
+    groupWait: {{ .Values.challenge.alert.groupWait }}
+    groupInterval: {{ .Values.challenge.alert.groupInterval }}
+    repeatInterval: {{ .Values.challenge.alert.repeatInterval }}
+    receiver: 'slack-balance-notification'
+    matchers:
+      - name : alertname
+        value : {{ .Values.challenge.alert.ruleLowBalanceThreshold }}
+  receivers:
+  - name: 'slack-balance-notification'
+    slackConfigs:
+    - apiURL:
+        name: challenge
+        key: api-url
+      title: "{{ "{{" }} range .Alerts  {{ "}}" }}{{ "{{" }} .Annotations.summary  {{ "}}" }}\n{{ "{{" }} end  {{ "}}" }}"
+      text: "{{ "{{" }} range .Alerts  {{ "}}" }}{{ "{{" }} .Annotations.description  {{ "}}" }}\n{{ "{{" }} end  {{ "}}" }}"    
