@@ -22,10 +22,10 @@ make helm-install
 
 ## Update Parameters
 
-Format list of accounts parameter (configs/accountList.json)
-
-- local (.env) 
-- Deployment (charts/value.yaml)
+- local: 
+    - configs/accountList.json (encoded in base64 and copied to .env file automatically at launch)
+    - .env
+- Deployment charts/value.yaml
 
 ## Docker image generation
 **The image is temporary publicly available on a registry**

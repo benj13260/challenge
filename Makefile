@@ -2,12 +2,8 @@ IMAGE_REPO ?= "your_repo"
 SLACK_URL ?= "https://hooks.slack.com/services/XXXXX/YYYYYYYY/ZZZZZZZ"
 
 local-run:
-	@cd configs && make generate-account-list-param-local
-	@yarn install 
-	@yarn run dev
-
-local-run-test-base64:
 	@cd configs && make generate-account-list-param-local-64
+	@yarn install 
 	@yarn run dev
 
 build-image:
@@ -17,7 +13,7 @@ build-image:
 	@docker build . -t $(IMAGE_REPO)/challenge:$version -t $(IMAGE_REPO)/challenge:latest
 
 push-image:
-	@docker push -a $(IMAGE_REPO)/challenge:latest
+	@docker push $(IMAGE_REPO)/challenge:latest
 
 release:
 	@make build-image
