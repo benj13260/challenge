@@ -25,13 +25,9 @@ const metricName: string = "challenge_account_balance"
 
 function initConfig() {
   try {
-    if ( process.env.BASED == "true") {
       accounts = JSON.parse(Buffer.from(process.env.ACCOUNTS, 'base64').toString('utf-8')).accounts;
-    } else {
-      accounts = JSON.parse(process.env.ACCOUNTS).accounts;
-    }
   } catch (e: any) {
-    console.log(`${process.env.ACCOUNTS} not a valid JSON format`);
+      console.log(`ACCOUNTS variable issue`);
   }
   provider = new WsProvider(process.env.RPC_URL);
   port = process.env.PORT
@@ -54,7 +50,6 @@ function httpStatus(ctx: Koa.Context): void {
 }
 
 async function main(): Promise<void> {
-
   initConfig();
 
   const api = await ApiPromise.create({ provider });

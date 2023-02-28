@@ -36,8 +36,6 @@ spec:
           env:
             - name: PORT
               value: {{ .Values.pod.port | quote }}
-            - name: BASED
-              value: "true"
             - name: ACCOUNTS
               valueFrom:
                 configMapKeyRef:
