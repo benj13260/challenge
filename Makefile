@@ -1,5 +1,7 @@
-IMAGE_REPO ?= "your_repo"
+IMAGE_REPO ?= "benjk6"
 SLACK_URL ?= "https://hooks.slack.com/services/XXXXX/YYYYYYYY/ZZZZZZZ"
+
+VERSION ?= $(shell grep appVersion charts/Chart.yaml | sed 's/appVersion[: "]*//' | sed 's/"//')
 
 local-run:
 	@cd configs && make generate-account-list-param-local-64
@@ -7,10 +9,8 @@ local-run:
 	@yarn run dev
 
 build-image:
-	@version=$(grep appVersion charts/Chart.yaml | sed 's/appVersion[: "]*//' | sed 's/"//')
-	@echo "Challenge $version"
-	@yarn run build || true
-	@docker build . -t $(IMAGE_REPO)/challenge:$version -t $(IMAGE_REPO)/challenge:latest
+	@echo "Challenge $(VERSION)"
+	@docker build . -t $(IMAGE_REPO)/challenge:latest -t $(IMAGE_REPO)/challenge:$(VERSION)
 
 push-image:
 	@docker push $(IMAGE_REPO)/challenge:latest

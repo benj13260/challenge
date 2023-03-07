@@ -11,21 +11,25 @@ image:
 
 challenge:
   rpcUrl: "wss://kusama-rpc.polkadot.io"
+  #The threshold per account is not working !
   accounts: |
     {
     "accounts": [
       {
         "name": "Alessio",
-        "key": "GaK38GT7LmgCpRSTRdDC2LeiMaV9TJmx8NmQcb9L3cJ3fyX"
+        "key": "GaK38GT7LmgCpRSTRdDC2LeiMaV9TJmx8NmQcb9L3cJ3fyX",
+        "threshold": "15"
       },
       {
         "name": "Alessio1",
-        "key": "GTuMySjzg6ibdn4sJ2XgS4cVH1LcjmXUWZyoxB5GPCCNRtx"
+        "key": "GTuMySjzg6ibdn4sJ2XgS4cVH1LcjmXUWZyoxB5GPCCNRtx",
+        "threshold": "12"
       }
     ]
     }
   alert:
     ruleLowBalanceThreshold: LowBalanceThreshold
+    #Only this main overall threshold is taken into account by the rule
     threshold: "12"
     groupWait: 30s # 1s
     groupInterval: 5m #35s

@@ -8,6 +8,6 @@ metadata:
 spec:
   selector:
     matchLabels:
-      {{- include "challenge.selectorLabels" . | nindent 6 }}
+      {{- include "challenge.labels" . | nindent 6 }}
   endpoints:
   - port: http

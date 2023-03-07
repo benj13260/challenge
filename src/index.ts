@@ -16,6 +16,7 @@ let chainUnit: string;
 interface account {
   name: string;
   key: number;
+  threshold: number;
   bal?: AccountData
 }
 let accounts: account[];
@@ -27,7 +28,7 @@ function initConfig() {
   try {
       accounts = JSON.parse(Buffer.from(process.env.ACCOUNTS, 'base64').toString('utf-8')).accounts;
   } catch (e: any) {
-      console.log(`ACCOUNTS variable issue`);
+      console.log(`Accounts variable issue`);
   }
   provider = new WsProvider(process.env.RPC_URL);
   port = process.env.PORT
@@ -37,7 +38,7 @@ function metrics(ctx: Koa.Context): void {
   let res: string = ''
   for (var account of accounts) {
     if (account.bal != undefined) {
-      res += `${metricName}{name="${account.name}", key="${account.key}", unit="${chainUnit}"} ${formatBalance(account.bal.free, { withUnit: false })}\n`
+      res += `${metricName}{name="${account.name}", key="${account.key}", threshold="${account.threshold}", unit="${chainUnit}"} ${formatBalance(account.bal.free, { withUnit: false })}\n`
     }
 
   }
