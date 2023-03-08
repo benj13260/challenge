@@ -1,3 +1,4 @@
+import '@polkadot/api-augment';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import type { AccountData, BlockNumber, Header } from '@polkadot/types/interfaces';
 import { BN, formatBalance } from '@polkadot/util';
