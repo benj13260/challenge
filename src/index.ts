@@ -40,8 +40,8 @@ function metrics(ctx: Koa.Context): void {
   let res: string = ''
   for (var account of accounts) {
     if (account.bal != undefined) {
-      res += `${metricName}{name="${account.name}", key="${account.key}", threshold="${account.threshold}", unit="${chainUnit}"} \
-${formatBalance(account.bal.free.sub(account.thresholdBN), { withUnit: false })}\n`
+      let overdraft = account.bal.free.sub(account.thresholdBN);
+      res += `${metricName}{name="${account.name}", key="${account.key}", threshold="${account.threshold}", unit="${chainUnit}"} ${overdraft.isNeg() ? -1 : 1 }\n`
     }
 
   }
