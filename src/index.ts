@@ -1,3 +1,4 @@
+import '@polkadot/api-augment/kusama'
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import type { AccountData, BlockNumber, Header } from '@polkadot/types/interfaces';
 import { BN, formatBalance } from '@polkadot/util';
@@ -16,7 +17,8 @@ let chainUnit: string;
 interface account {
   name: string;
   key: number;
-  threshold: number;
+  threshold: string;
+  thresholdBN: BN
   bal?: AccountData
 }
 let accounts: account[];
@@ -26,9 +28,9 @@ const metricName: string = "challenge_account_balance"
 
 function initConfig() {
   try {
-      accounts = JSON.parse(Buffer.from(process.env.ACCOUNTS, 'base64').toString('utf-8')).accounts;
+    accounts = JSON.parse(Buffer.from(process.env.ACCOUNTS, 'base64').toString('utf-8')).accounts;
   } catch (e: any) {
-      console.log(`Accounts variable issue`);
+    console.log(`Accounts variable issue`);
   }
   provider = new WsProvider(process.env.RPC_URL);
   port = process.env.PORT
@@ -38,7 +40,8 @@ function metrics(ctx: Koa.Context): void {
   let res: string = ''
   for (var account of accounts) {
     if (account.bal != undefined) {
-      res += `${metricName}{name="${account.name}", key="${account.key}", threshold="${account.threshold}", unit="${chainUnit}"} ${formatBalance(account.bal.free, { withUnit: false })}\n`
+      res += `${metricName}{name="${account.name}", key="${account.key}", threshold="${account.threshold}", unit="${chainUnit}"} \
+${formatBalance(account.bal.free.sub(account.thresholdBN), { withUnit: false })}\n`
     }
 
   }
@@ -47,10 +50,12 @@ function metrics(ctx: Koa.Context): void {
 }
 
 function httpStatus(ctx: Koa.Context): void {
-  ctx.body = { ok: true};
+  ctx.body = { ok: true };
 }
 
 async function main(): Promise<void> {
+
+
   initConfig();
 
   const api = await ApiPromise.create({ provider });
@@ -61,6 +66,7 @@ async function main(): Promise<void> {
 
   for (let i = 0; i < accounts.length; i++) {
     const account = accounts[i];
+    account.thresholdBN = new BN(account.threshold + ("0".padEnd(12, '0')))
     await api.query.system.account(account.key, (res: any) => {
       account.bal = res.data;
     });

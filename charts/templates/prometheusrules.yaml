@@ -10,7 +10,7 @@ spec:
   - name: challenge
     rules:
     - alert: {{ .Values.challenge.alert.ruleLowBalanceThreshold }}
-      expr: challenge_account_balance < {{ .Values.challenge.alert.threshold }}
+      expr: challenge_account_balance < 0
       for: 30s
       labels:
         team: challenge
@@ -18,5 +18,5 @@ spec:
       annotations:
         summary: "[Alert] Balance threshold"
         #{{ "{{" }} $labels.name {{ "}}" }} / {{ "{{" }} $labels.key {{ "}}" }}"
-        description: "Current balance: {{ "{{" }} $value {{ "}}" }} {{ "{{" }} $labels.unit {{ "}}" }} - {{ "{{" }} $labels.name {{ "}}" }} / {{ "{{" }} $labels.key {{ "}}" }}"
+        description: "Current overdraft: {{ "{{" }} $value {{ "}}" }} {{ "{{" }} $labels.unit {{ "}}" }} - {{ "{{" }} $labels.name {{ "}}" }} / {{ "{{" }} $labels.key {{ "}}" }}"
         runbook: "Refund wallet..."
